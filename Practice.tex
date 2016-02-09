@@ -2,6 +2,9 @@
 %добавляет русский язык
 \usepackage[english,russian]{babel}
 \usepackage[14pt]{extsizes}
+\usepackage{color}
+\definecolor{darkgreen}{rgb}{0,.5,0}
+\usepackage[colorlinks,linkcolor=black,urlcolor=blue]{hyperref}
 %%TODO Настроить отступы 
 %%Добавление абзацев после оглавления (indentfirst)
 \usepackage[indentfirst]{titlesec}
@@ -80,13 +83,23 @@
     	Минусы \LaTeX:
 		\begin{itemize} 
 	    	\item	Не является системой типа WYSIWYG
-	    				\footnote{What You See Is What You Get(Что видишь, то и получишь). Стоит отметить, что есть дистрибутивы 							\TeX ~в которых есть попытки реализовать WYSIWYG. Например платный дистрибутив  BaKoMa TeX + текстовый 								редактор  BaKoMa TeX Word.}   
+	    				\footnote{What You See Is What You Get(Что видишь, то и получишь). Стоит отметить, что существуют 									дистрибутивы \TeX ~в которых есть попытки реализовать WYSIWYG. Например платный дистрибутив  BaKoMa TeX + 						текстовый редактор  BaKoMa TeX Word.}   
 	    	\item	При серьезных отклонениях от стандартных стилей документов требуется
 					достаточно сложное программирование	
     	\end{itemize}
     	
     		То есть, выбирая между \LaTeX ~и MS Word, стоит обратить внимание на то,какой текст вы собираетесь печатать, 					насколько нестандартный будет стиль текста, на его примерный объем. В некоторый случаях достаточно использовать MS Word,   		в других "--- использование \LaTeX ~может заметно упростить работу.
 		\subsection{Выбор инструмента редактирования}
+			В ходе изучения всех возможных вариантов работа с \LaTeX для создния данного отчета, была выбрана программа Textmaker				\footnote{Оффициальный сай Textmaker:~ \href{http://www.xm1math.net/texmaker/}{http://www.xm1math.net/texmaker/}}.\\
+		Выбор Textmaker'а обусловлен следующими его особенностями:
+			\begin{itemize} 
+	    		\item	Автоматическая подсветка синтаксиса
+	    		\item	Функция автодополнения команд \LaTeX
+	    		\item	Сокрытие блоков кода (Code folding)
+	    		\item	Быстрая навигация по структуре документа
+	    		\item	Указание на строку с ошибкой, для быстрой отладки
+	    		\item	Интегрированный просмотр PDF
+			\end{itemize} 
 	\newpage
 	\section{Системы контроля версий}
 		\subsection{Краткое описание}
@@ -97,7 +110,7 @@
 		\subsection{История}
 		\subsection{Что-нибудь из теории}
 		\subsection{Что-нибудь еще...}
-	\newpage
+	%\newpage
 	\section{Функции замера времени}
 		%%Описывание разных функций замера времени
 		\subsection{Принцип работы}
