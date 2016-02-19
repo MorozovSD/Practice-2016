@@ -1,4 +1,8 @@
 \documentclass{article}
+
+%Вставки кода
+\usepackage{listings} 
+
 %добавляет русский язык
 \usepackage[english,russian]{babel}
 \usepackage[14pt]{extsizes}
@@ -8,6 +12,7 @@
 \graphicspath{{./image-parallel/}{image-git/}}
 %Пакет работы с цветом
 \usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
 %Пакет работы с гиперссылками и установка цвета ссылок
 \usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
 %Отступы
@@ -22,6 +27,32 @@
 \usepackage{multirow}
 \author{Морозов С.Д.}
 \begin{document}
+
+%Настройка параметров вставок кода
+
+\lstset{ 
+	language=C,                 % выбор языка для подсветки (здесь это С)
+	basicstyle=\small\sffamily, % размер и начертание шрифта для подсветки кода
+	numbers=left,               % где поставить нумерацию строк (слева\справа)
+	stepnumber=1,                   % размер шага между двумя номерами строк
+	numbersep=5pt,                % как далеко отстоят номера строк от подсвечиваемого кода
+	backgroundcolor=\color{white}, % цвет фона подсветки - используем \usepackage{color}
+	keywordstyle=\color{blue},	
+	showspaces=false,            % показывать или нет пробелы специальными отступами
+	showstringspaces=false,      % показывать или нет пробелы в строках
+	showtabs=false,             % показывать или нет табуляцию в строках
+	frame=single,              % рисовать рамку вокруг кода
+	tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+	captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+	breaklines=true,           % автоматически переносить строки (да\нет)
+	breakatwhitespace=false, % переносить строки только если есть пробел
+	escapeinside={\%*}{*)}   % если нужно добавить комментарии в коде
+	numberstyle=\tiny\color{mygray},
+  	rulecolor=\color{black},
+  	commentstyle=\color{mygreen}, 
+}
+
+
 \begin{titlepage}
 	\centering
 	{\LARGE Университет ИТМО \par}
@@ -374,7 +405,13 @@
 				\item CLOCK$\_$THREAD$\_$CPUTIME$\_$ID "---	Таймер процессора работающий с каждым потоком с высокой разрешающей 						способностью		
 				\item CLOCK$\_$PROCESS$\_$CPUTIME$\_$ID "---	Таймер процессора работающий с каждым процессом с высокой 								разрешающей способностью
 				\item CLOCK$\_$REALTIME "--- Таймер реального времени в масштабе всей системы
-			\end{itemize}					
+			\end{itemize}	
+			\subsubsection*{omp$\_$get$\_$wtime}
+			$$double~omp\_get\_wtime(void)$$
+				
+				Функция возвращает значение, прошедшее от некоторого "времени в прошлом", которое гарантированно не затрагивает 				программа.  The time is measured per thread, no guarantee can be made that two distinct threads measure the same 					time.?
+			%\subsubsection*{omp_get_wtick}
+			%$$double~omp\_get\_wtime(void)$$			
 			\subsubsection*{GetTickCount и GetTickCount64}
 				$$DWORD~WINAPI~GetTickCount(void)$$
 				$$ULONGLONG~WINAPI~GetTickCount64(void)$$
@@ -395,11 +432,36 @@
 		%Можно описать некоторые штуки библиотеки openMP
 			Эксперименты проводились с довольно таки простой программой код которой представлен ниже:
 			
-		\begin{center}
-			 \textbf{Здесь может быть ваша реклама (или код)}
-		\end{center}
+			\begin{lstlisting}[label=some-code,caption=Тестовая программа]
+			#include <omp.h>
+			#include <stdio.h>
+			
+			double run_parallel_experiment(int amount_of_threads, unsigned int experiment_size) {
+    		unsigned int i;
+    		double sum_of_squares = 0;
+    		omp_set_num_threads(amount_of_threads); 
+    		#pragma omp parallel for reduction(+:sum_of_squares)
+   			 for (i = 0; i < experiment_size; ++i) {
+        		sum_of_squares += i*i;
+    		}
+   			return sum_of_squares;
+			}
+
+			int main() {
+    			double result;
+    			double t1;
+    			double t2;
+				//"Start timer"
+    			result = run_parallel_experiment(2, 100000000);
+				//"Stop timer"
+    			printf("result=%e, time_in_milliseconds=%f\n", result, 1000*(t2 - t1));
+    
+    			return 0;
+			}
+		\end{lstlisting}
+		\newpage
 		
-			С ходе экспериментов в строки №23 и 27 подставлялись различные функции замера времени, что в свою очередь сказывалось 			на выводе программы\footnote{Вывод программы есть ни что иное как время выполнение программы, по крайней мере мы 					хотим, чтобы это было временем выполнения.}.
+			С ходе экспериментов в строки №19 и 21 подставлялись различные функции замера времени, что в свою очередь сказывалось 		на выводе программы\footnote{Вывод программы есть ни что иное как время выполнение программы, по крайней мере мы 					хотим, чтобы это было временем выполнения.}.
 			
 			Для получения более точных и достоверных результатов были предприняты следующие шаги:
 			
@@ -415,12 +477,14 @@
 		%%Большая таблица сравнения развых функций замеров времени
 		В столбце "Итог" отображается вывод о том, стоит ли использовать данную функцию в параллельных программах
 		Эту таблицу можно отправить в главу функции замера времени
+		
+		\newpage
 		\begin{table}
-			\begin{tabular}{|c|c|c|c|c|c|c|} 
+			\begin{tabular}{|c|c|c|c|c|c|c|c|} 
 			\hline
 			\multirow{2}{*}{Функции} & \multicolumn{6}{|c|}{ Критерии оценивания	}\\
 			\cline{2-7}
-			\qquad & Windows & Linux & Точность & Thread-safery & Реентабильность & Итог \\
+			\qquad & Windows & Linux & Размерность & Точность & Thread-safery & Реентабильность & Итог \\
 			\hline
 			clock	\\
 			time	\\
@@ -437,7 +501,7 @@
 		Как оформлять код?
 		Какое доп задание?
 		 (в практическом программировании под современные ОС термин «реентерабельный» на деле равносилен термину «thread-safe»).		
-		
+		\newpage
 		\begin{table}
 			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
 			\hline
