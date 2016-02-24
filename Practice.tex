@@ -369,7 +369,8 @@
 			\subsubsection*{localtime$\_$r}
 			$$struct~tm~*~localtime\_r~(const~time\_t~*~s\_time,~struct~tm~*~m\_time);$$
 			
-				Функция преобразовывает текущее значение времени, передаваемое как аргумент, через указатель timeptr на time$\_t$ 			в структуру tm (местное время), на которую указывает аргумент m$\_$time. Так же функция возвращает указатель на эту 				структуру.			
+				Функция преобразовывает текущее значение времени, передаваемое как аргумент, через указатель timeptr на time$\_t$ 			в структуру tm (местное время), на которую указывает аргумент m$\_$time. Так же функция возвращает указатель на эту 				структуру.	
+			\subsubsection*{localtime$\_$s}		
 			\subsubsection*{asctime}
 			$$char~*~asctime~(const~struct~tm~*~m_time)$$			
 			
@@ -387,7 +388,8 @@
 			$$char~*~asctime\_r~(const~struct~tm~*~m\_time,~char~*~buf)$$			
 			
 				Функция преобразует локальное (местное) время представленное в виде структуры типа struct tm, на которую 						указывает аргумент m$\_$time в текстовую строку длинною 26 символов. Результат преобразования помещается в строку, на 			которую указывает аргумент buf. Возвращаемая строка имеет формат аналогичный фортату строки возвращаемый функцией 					asctime.
-				
+			
+			\subsubsection*{localtime$\_$s}		
 			\subsubsection*{ctime}
 				$$char~*~ctime(const~time\_t~ *~ timeptr)$$
 				
@@ -396,6 +398,7 @@
 				$$char~*~ctime\_r(const~tim_t~*~clock,~char~*~buf)$$
 
 				Функция эквивалентна последовательному выполнению функций localtime$\_$r() и asctime$\_$r().
+			\subsubsection*{ctime$\_$r}
 			\subsubsection*{gettimeofday}
 			$$int~gettimeofday(struct~timeval~*tv,~struct~timezone~*tz)$$ 
 			
@@ -519,20 +522,24 @@
 		
 		Как оформлять код?
 		Какое доп задание?
-		 (в практическом программировании под современные ОС термин «реентерабельный» на деле равносилен термину «thread-safe»).		
+		 (в практическом программировании под современные ОС термин «реентерабельный» на деле равносилен термину «thread-safe»).			
 		\newpage
 		\begin{table}
-			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 			\hline
-			\multirow{3}{*}{Функции} & \multicolumn{9}{|c|}{ Кол-во ядер }\\
-			\cline{2-10}
-			\qquad 	& \multicolumn{3}{|c|}{ 1 } & \multicolumn{3}{|c|}{ 2 } & \multicolumn{3}{|c|}{ 4 } \\
-			\cline{2-10}
-			\qquad	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	 \\
+			\multicolumn{13}{|c|} Windows \\
+			\hline
+			\multirow{3}{*}{Функции} & \multicolumn{12}{|c|}{ Кол-во ядер }\\
+			\cline{2-13}
+			\qquad 	& \multicolumn{3}{|c|}{ 1 } & \multicolumn{3}{|c|}{ 2 } & \multicolumn{3}{|c|}{ 3 } & \multicolumn{3}{|c|}{ 4 } \\
+			\cline{2-13}
+			\qquad	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	 	\\
 			\hline			
-			clock	\\
-			time	\\
-			...		\\
+			clock	&	32	&	32	&	33	&	16	&	16	&	16	&	11	&	11	&	11	&	8	&	8	&	8		\\
+			\hline
+			time	&	32	&	34	&	36	&	16	&	16	&	17	&	11	&	11	&	12	&	8	&	9	&	9		\\
+			\hline
+			omp$\_$get$\_$wtime	&	32.61	&	32.649	&	32.688	&	16.442	&	16.455	&	16.469	&	11.172	&	11.227	&	11.282	&	8.594	&	8.6175	&	8.641		\\
 			\end{tabular}		
 		\end{table}
 		
