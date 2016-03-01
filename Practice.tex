@@ -390,7 +390,8 @@
 			
 		\subsubsection{Windows}	
 			\paragraph*{localtime$\_$s}	
-			\paragraph*{ctime$\_$s}
+			\paragraph*{ctime$\_$s}				
+			\paragraph*{GetTickCount}
 		\subsubsection{Linux}	
 			\paragraph*{localtime$\_$r}
 			$$struct~tm~*~localtime\_r~(const~time\_t~*~s\_time,~struct~tm~*~m\_time);$$
@@ -421,6 +422,46 @@
 				\item CLOCK$\_$PROCESS$\_$CPUTIME$\_$ID "---	Таймер процессора работающий с каждым процессом с высокой 								разрешающей способностью
 				\item CLOCK$\_$REALTIME "--- Таймер реального времени в масштабе всей системы
 			\end{itemize}	
+
+			\subsection{Сравнение функций}			
+			
+			Для сравнения функций были выбранны следующие критерии:
+			\begin{itemize}
+				\item Кроссплатформенность. Т.е. на каких ОС работает данная функция.
+				\item Реентабильность и Thread-safery. Потоко-безопасная функция может вызываться одновременно из нескольких 							потоков, даже когда вызовы используют общие данные, потому что все ссылки на общие данные упорядочиваются.
+					Реентерабельная функция также может вызываться одновременно из нескольких потоков, но только тогда, когда 							каждый вызов использует свои собственные данные. Т.е. каждая реентабильная функция является thread-safery 							функцией, но не каждая thread-safery функция является реентабильной.
+				\item Возвращаемое значение. Данный критерий выбран только для наглядности, указывает какое значение (int, 								double, time$\_$t и т.д.) возращает функция.
+				\item Точность. Какова точность (или разрешающая способность) функции.
+			\end{itemize}
+			
+			\begin{table}
+			\begin{tabular}{|c|c|c|c|c|} 
+			\hline
+			\multirow{2}{*}{Функции} & \multicolumn{4}{|c|}{ Критерии оценивания	}\\
+			\cline{2-5}
+			\qquad & Платформа & Реент. и thread-safery & Возв. значение & Точность \\
+			\hline
+			clock				& Кросс. 	 & +/+ &  &						\\
+			time				& Кросс. 	 & +/+ &  &						\\
+			gmtime				& Кросс. 	 & -/- &  &						\\
+			gmtime$\_$r 		& Linux 	 & ?/? &  &						\\
+			gmtime$\_$ы 		& Windows 	 & ?/? &  &						\\
+			localtime 			& Кросс. 	 & -/- &  &						\\
+			localtime$\_$r		& Linux 	 & ?/? &  &						\\
+			localtime$\_$s		& Windows 	 & ?/? &  &						\\
+			asctime		 		& Кросс. 	 & -/- &  &						\\
+			asctime$\_$r 		& Linux 	 & ?/? &  &						\\
+			asctime$\_$s 		& Windows 	 & ?/? &  &						\\
+			ctime				& Кросс. 	 & -/- &  &						\\
+			ctime$\_$r			& Linux 	 & ?/? &  &						\\
+			ctime$\_$s			& Windows 	 & ?/? &  &						\\
+			gettimeofday		& Linux 	 & +/+ &  &						\\
+			clock$\_$gettime	& Linux 	 & +/+ &  &						\\
+			omp$\_$get$\_$wtime	& Кросс. 	 & +/+ &  &						\\
+			GetTickCount		& Windows 	 & +/+ &  & 						\\
+			\hline
+			\end{tabular}		
+		\end{table}	
 			
 			%\subsubsection*{omp_get_wtick}
 			%$$double~omp\_get\_wtime(void)$$			
@@ -479,33 +520,6 @@
 		Эту таблицу можно отправить в главу функции замера времени
 		
 		\newpage
-		\begin{table}
-			\begin{tabular}{|p{0.2\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}| c | p{0.15\textwidth}|p{0.1\textwidth}|} 
-			\hline
-			\multirow{2}{*}{Функции} & \multicolumn{5}{|c|}{ Критерии оценивания	}\\
-			\cline{2-6}
-			\qquad & Платформа & Точность & Thread-safery & Реента\-бильность & Возв. значение \\
-			\hline
-			clock				& Кросс. 	& & + & + &						\\
-			time				& Кросс. 	& & + & + &						\\
-			gmtime				& Кросс. 	& & - & - &						\\
-			gmtime$\_$r 		& Linux 	& & + & + &						\\
-			localtime 			& Кросс. 	& & - & - &						\\
-			localtime$\_$r		& Linux 	& & + & + &						\\
-			asctime		 		& Кросс. 	& & - & - &						\\
-			asctime$\_$r 		& Linux 	& & + & + &						\\
-			ctime				& Кросс. 	& & - & - &						\\
-			ctime$\_$r			& Linux 	& & + & + &						\\
-			gettimeofday		& Linux 	& & + & + &						\\
-			clock$\_$gettime	& Linux 	& & + & + &						\\
-			omp$\_$get$\_$wtime	& Кросс. 	& & + & + &						\\
-			GetTickCount		& Windows 	& & + & + & 						\\
-			GetTickCount64		& Windows 	& & + & + &						\\
-			GetLocalTime		& Windows 	& & ? & ? &						\\
-			GetSystemTime		& Windows 	& & ? & ? &						\\
-			\hline
-			\end{tabular}		
-		\end{table}
 		
 			Тут что-то в духе "в ходе проверки функций, тыли выявлены наиболее подходящие для пар. вычислений. Результаты работы 			этих функций представленны в таблице 2. 
 		
@@ -515,7 +529,7 @@
 		 (в практическом программировании под современные ОС термин «реентерабельный» на деле равносилен термину «thread-safe»).			
 		\newpage
 		\begin{table}
-			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\begin{tabular}{|cp{2cm}|c|c|c|c|c|c|c|c|c|c|c|c|}
 			\hline
 			\multicolumn{13}{|c|} Windows \\
 			\hline
@@ -527,7 +541,23 @@
 			\hline			
 			clock	&	32.609	&	32.641	&	32.673	&	16.422	&	16.445	&	16.469	&	11.187	&	11.226	&	11.265	&	8.609	&	8.652	&	8.695		\\
 			\hline
-			time	&	32	&	34	&	36	&	16	&	16	&	17	&	11	&	11	&	12	&	8	&	9	&	9		\\
+			time	&	32	&	32	&	33	&	16	&	16	&	17	&	11	&	11	&	12	&	8	&	8	&	9		\\
+			\hline
+			omp$\_$get$\_$wtime	&	32.61	&	32.649	&	32.688	&	16.442	&	16.455	&	16.469	&	11.172	&	11.227	&	11.282	&	8.594	&	8.6175	&	8.641		\\
+			\hline
+			GetTickCount	&	32.703	&	32.726	&	32.75	&	16.562	&	16.609	&	16.656	&	11.204	&	11.242	&	12.281	&	8.640	&	8.656	&	8.672		\\
+			\hline
+			\multicolumn{13}{|c|} Linux \\
+			\hline
+			\multirow{3}{*}{Функции} & \multicolumn{12}{|c|}{ Кол-во ядер }\\
+			\cline{2-13}
+			\qquad 	& \multicolumn{3}{|c|}{ 1 } & \multicolumn{3}{|c|}{ 2 } & \multicolumn{3}{|c|}{ 3 } & \multicolumn{3}{|c|}{ 4 } \\
+			\cline{2-13}
+			\qquad	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	&	Min	&	Ave	&	Max	 	\\
+			\hline			
+			clock	&	32.609	&	32.641	&	32.673	&	16.422	&	16.445	&	16.469	&	11.187	&	11.226	&	11.265	&	8.609	&	8.652	&	8.695		\\
+			\hline
+			time	&	32	&	32	&	33	&	16	&	16	&	17	&	11	&	11	&	12	&	8	&	8	&	9		\\
 			\hline
 			omp$\_$get$\_$wtime	&	32.61	&	32.649	&	32.688	&	16.442	&	16.455	&	16.469	&	11.172	&	11.227	&	11.282	&	8.594	&	8.6175	&	8.641		\\
 			\hline
